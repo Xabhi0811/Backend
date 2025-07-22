@@ -1,8 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const mongoose = require('mongoose');
+const  router = express.Router();
+const ConnectedDB = require('../db/db'); // Adjust this path as per your structure
 const { body, validationResult } = require('express-validator');
-const User = require('./module/module'); // Adjust this path as per your structure
-
+const User = require('../modules/module'); // Adjust this path as per your structure
 // ✅ GET all users
 router.get('/users', async (req, res) => {
     try {
@@ -20,8 +21,11 @@ router.post(
         body('name').notEmpty().withMessage('Enter name'),
         body('age').isInt().withMessage('Enter a valid age'),
         body('email').isEmail().withMessage('Enter a valid email'),
+        
     ],
+   
     async (req, res) => {
+         console.log('Validation middleware applied')
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
